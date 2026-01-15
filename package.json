@@ -14,12 +14,25 @@
     "creating"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "format": "prettier --write ."
   },
   "author": "Gokul Panwar",
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
+    "nodemon": "^3.1.11",
     "prettier": "3.8.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mailgen": "^2.0.32",
+    "mongoose": "^9.1.3",
+    "nodemailer": "^7.0.12"
   }
 }
