@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import bycrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { createHash, randomBytes } from 'node:crypto';
 
@@ -7,7 +7,6 @@ const userSchema = new Schema(
   {
     fullName: {
       type: String,
-      required: true,
       trim: true,
     },
     username: {
@@ -28,7 +27,10 @@ const userSchema = new Schema(
         url: String,
         localPath: String,
       },
-      default: { url: '', localPath: '' },
+      default: {
+        url: `https://placehold.co/200x200`,
+        localPath: '',
+      },
     },
     password: {
       type: String,
@@ -61,14 +63,13 @@ const userSchema = new Schema(
 
 // Hash password before saving the user model
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
-  this.password = await bycrypt.hash(this.password, 10);
-  next();
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
 userSchema.methods.isPasswordMatch = async function (plainPassword) {
-  return await bycrypt.compare(plainPassword, this.password);
+  return await bcrypt.compare(plainPassword, this.password);
 };
 
 userSchema.methods.generateAccessToken = function () {
