@@ -94,7 +94,7 @@ const forgotPasswordMailContent = (username, resetUrl) => {
         button: {
           color: '#DC4D2F',
           text: 'Reset your password',
-          link: 'https://mailgen.js/reset?s=b350163a1a010d9729feb74992c1a010',
+          link: resetUrl,
         },
       },
       outro:
