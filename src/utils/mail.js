@@ -1,7 +1,6 @@
 import Mailgen from 'mailgen';
 import nodemailer from 'nodemailer';
 
-/*************  ✨ Windsurf Command ⭐  *************/
 /**
  * Sends an email using the configured SMTP server.
  * @param {Object} options - An object containing the email options
