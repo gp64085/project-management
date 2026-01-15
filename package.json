@@ -1,0 +1,25 @@
+{
+  "name": "project-management",
+  "version": "1.0.0",
+  "description": "A project management application built with Node.js, Express and MongoDB.",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "project",
+    "management",
+    "node.js",
+    "express",
+    "mongodb",
+    "Api",
+    "creating"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gokul Panwar",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "prettier": "3.8.0"
+  }
+}
