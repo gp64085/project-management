@@ -7,7 +7,6 @@ const userSchema = new Schema(
   {
     fullName: {
       type: String,
-      required: true,
       trim: true,
     },
     username: {
@@ -28,7 +27,10 @@ const userSchema = new Schema(
         url: String,
         localPath: String,
       },
-      default: { url: '', localPath: '' },
+      default: {
+        url: `https://placehold.co/200x200`,
+        localPath: '',
+      },
     },
     password: {
       type: String,
@@ -61,10 +63,9 @@ const userSchema = new Schema(
 
 // Hash password before saving the user model
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
   this.password = await bycrypt.hash(this.password, 10);
-  next();
 });
 
 userSchema.methods.isPasswordMatch = async function (plainPassword) {
