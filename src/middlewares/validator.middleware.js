@@ -15,8 +15,8 @@ export const validateRequest = (req, res, next) => {
     return next();
   }
 
-  const extractedErrors = [];
-  errors.array().map((err) => extractedErrors.push({ [err.path]: err.msg }));
+  const extractedErrors = {};
+  errors.array().map((err) => (extractedErrors[err.path] = err.msg));
 
   return res
     .status(422)

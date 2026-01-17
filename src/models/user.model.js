@@ -74,14 +74,14 @@ userSchema.methods.isPasswordMatch = async function (plainPassword) {
 
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
-    { userId: this._id, email: this.email, username: this.username },
+    { _id: this._id, email: this.email, username: this.username },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN },
   );
 };
 
 userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign({ userId: this._id }, process.env.REFRESH_TOKEN_SECRET, {
+  return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
   });
 };

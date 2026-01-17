@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "debug": "nodemon --inspect src/index.js",
     "format": "prettier --write ."
   },
   "author": "Gokul Panwar",

@@ -7,22 +7,25 @@ export const verifyJwt = async (req, res, next) => {
     req.cookies?.accessToken || req.headers.authorization?.split(' ')?.[1];
 
   if (!accessToken) {
-    throw new ApiError(401, 'Unauthorized: No access token provided');
+    throw new ApiError(401, 'Unauthorized', ['No access token provided']);
   }
 
   try {
-    const decoded = jwt.verify(accessToken, config.jwt.secret);
-    const user = await User.findById(decoded?.userId).select(
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const user = await User.findById(decoded?._id).select(
       '-password -refreshToken -emailVerificationToken -emailVerificationTokenExpiry',
     );
 
     if (!user) {
-      throw new ApiError(401, 'Unauthorized: Invalid access token');
+      throw new ApiError(401, 'Unauthorized', ['User not found']);
     }
 
     req.user = user;
     next();
   } catch (error) {
-    throw new ApiError(401, 'Unauthorized: Invalid access token');
+    if (error.name === 'TokenExpiredError') {
+      throw new ApiError(401, 'Unauthorized: Access token has expired', []);
+    }
+    throw new ApiError(401, 'Unauthorized', ['Invalid access token']);
   }
 };
