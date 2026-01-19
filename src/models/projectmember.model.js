@@ -22,4 +22,7 @@ const projectMemberSchema = new Schema(
   { timestamps: true },
 );
 
+// unique indexing on project and user
+projectMemberSchema.index({ project: 1, user: 1 }, { unique: true });
+
 export const ProjectMember = model('ProjectMember', projectMemberSchema);

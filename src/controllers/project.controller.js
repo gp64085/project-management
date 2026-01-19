@@ -78,17 +78,41 @@ const getProjectById = asyncHandler(async (req, res) => {
 const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
 
-  const project = await Project.create({
-    name,
-    description,
-    createdBy: new ObjectId(req.user._id),
-  });
+  const session = await Project.startSession();
 
-  await ProjectMember.create({
-    project: new ObjectId(project._id),
-    user: new ObjectId(req.user._id),
-    role: UserRolesEnum.ADMIN,
-  });
+  let project;
+
+  try {
+    await session.withTransaction(async () => {
+      [project] = await Project.create(
+        [
+          {
+            name,
+            description,
+            createdBy: new ObjectId(req.user._id),
+          },
+        ],
+        { session },
+      );
+
+      await ProjectMember.create(
+        [
+          {
+            project: new ObjectId(project._id),
+            user: new ObjectId(req.user._id),
+            role: UserRolesEnum.ADMIN,
+          },
+        ],
+        { session },
+      );
+    });
+  } finally {
+    session.endSession();
+  }
+
+  if (!project) {
+    throw new ApiError(500, 'Failed to create project');
+  }
 
   res
     .status(201)
@@ -221,9 +245,10 @@ const updateProjectMemberRole = asyncHandler(async (req, res) => {
   }
 
   const projectMember = await ProjectMember.findOneAndUpdate(
-    { 
-      project: new ObjectId(projectId), 
-      user: new ObjectId(memberId) },
+    {
+      project: new ObjectId(projectId),
+      user: new ObjectId(memberId),
+    },
     {
       role: newRole,
     },
