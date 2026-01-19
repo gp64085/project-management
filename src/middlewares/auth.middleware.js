@@ -3,6 +3,7 @@ import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/api-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
 import { ProjectMember } from '../models/projectmember.model.js';
+import { isValidObjectId } from 'mongoose';
 
 export const verifyJwt = async (req, res, next) => {
   const accessToken =
@@ -35,6 +36,10 @@ export const verifyJwt = async (req, res, next) => {
 export const validateProjectPermission = (roles = []) => {
   return asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
+
+    if (!isValidObjectId(projectId)) {
+      throw new ApiError(400, 'Invalid project id');
+    }
 
     const projectMember = await ProjectMember.findOne({
       project: projectId,

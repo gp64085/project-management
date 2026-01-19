@@ -48,7 +48,11 @@ router.get(
   getProjectById,
 );
 
-router.get('/:projectId/members', getProjectMembers);
+router.get(
+  '/:projectId/members',
+  validateProjectPermission(AvailableUserRoles),
+  getProjectMembers,
+);
 
 router.post(
   '/:projectId/members',
