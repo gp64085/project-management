@@ -12,4 +12,4 @@ export const TaskStatusEnum = Object.freeze({
   DONE: 'done',
 });
 
-export const AvailableTaskStatuses = Object.values(TaskStatusEnum);
+export const AvailableTaskStatus = Object.values(TaskStatusEnum);
