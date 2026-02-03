@@ -1,11 +1,11 @@
 import { asyncHandler } from '../utils/async-handler.js';
 import { Project } from '../models/project.model.js';
-import { ApiResponse } from '../utils/api-response.js';
 import { ProjectMember } from '../models/projectmember.model.js';
 import { Types } from 'mongoose';
 import { AvailableUserRoles, UserRolesEnum } from '../utils/constants.js';
 import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/api-error.js';
+import { sendOk, sendCreated } from '../utils/response-helper.js';
 
 const { ObjectId } = Types;
 
@@ -58,9 +58,7 @@ const getProjects = asyncHandler(async (req, res) => {
     },
   ]);
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Projects retrieved successfully', projects));
+  return sendOk(res, 'Projects retrieved successfully', projects);
 });
 
 const getProjectById = asyncHandler(async (req, res) => {
@@ -70,9 +68,7 @@ const getProjectById = asyncHandler(async (req, res) => {
 
   if (!project) throw new ApiError(404, 'Project not found');
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Project retrieved successfully', project));
+  return sendOk(res, 'Project retrieved successfully', project);
 });
 
 const createProject = asyncHandler(async (req, res) => {
@@ -114,9 +110,7 @@ const createProject = asyncHandler(async (req, res) => {
     throw new ApiError(500, 'Failed to create project');
   }
 
-  res
-    .status(201)
-    .json(new ApiResponse(201, 'Project created successfully', project));
+  return sendCreated(res, 'Project created successfully', project);
 });
 
 const updateProject = asyncHandler(async (req, res) => {
@@ -134,9 +128,7 @@ const updateProject = asyncHandler(async (req, res) => {
 
   if (!project) throw new ApiError(404, 'Project not found');
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Project updated successfully', project));
+  return sendOk(res, 'Project updated successfully', project);
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
@@ -147,9 +139,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 
   await ProjectMember.deleteMany({ project: new ObjectId(projectId) });
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Project deleted successfully', null));
+  return sendOk(res, 'Project deleted successfully');
 });
 
 const addProjectMemberToProject = asyncHandler(async (req, res) => {
@@ -172,9 +162,7 @@ const addProjectMemberToProject = asyncHandler(async (req, res) => {
     { new: true, upsert: true },
   );
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Project member added successfully', null));
+  return sendOk(res, 'Project member added successfully');
 });
 
 const getProjectMembers = asyncHandler(async (req, res) => {
@@ -224,15 +212,7 @@ const getProjectMembers = asyncHandler(async (req, res) => {
     },
   ]);
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        'Project members retrieved successfully',
-        projectMembers,
-      ),
-    );
+  return sendOk(res, 'Project members retrieved successfully', projectMembers);
 });
 
 const updateProjectMemberRole = asyncHandler(async (req, res) => {
@@ -257,15 +237,7 @@ const updateProjectMemberRole = asyncHandler(async (req, res) => {
 
   if (!projectMember) throw new ApiError(404, 'Project member not found');
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        'Project member role updated successfully',
-        projectMember,
-      ),
-    );
+  return sendOk(res, 'Project member role updated successfully', projectMember);
 });
 
 const removeProjectMember = asyncHandler(async (req, res) => {
@@ -277,9 +249,7 @@ const removeProjectMember = asyncHandler(async (req, res) => {
   });
   if (!projectMember) throw new ApiError(404, 'Project member not found');
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, 'Project member removed successfully', null));
+  return sendOk(res, 'Project member removed successfully');
 });
 
 export {
