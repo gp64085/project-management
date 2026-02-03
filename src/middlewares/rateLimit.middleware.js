@@ -5,7 +5,7 @@ export default rateLimit({
   limit: process.env.RATE_LIMIT_PER_MINUTE || 50,
   message: {
     error: 'Too many requests from this IP, please try again later.',
-    retryAfter: '1 minutes',
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
