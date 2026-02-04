@@ -7,6 +7,15 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    
+    env:
+      NODE_ENV: test
+      PORT: 4000
+      MONGODB_URI: mongodb://testuser:testpass@localhost:27017/project-management-test?authSource=admin
+      JWT_SECRET: test-secret-key
+      REFRESH_TOKEN_SECRET: test-refresh-secret
+      JWT_EXPIRES_IN: 1h
+      REFRESH_TOKEN_EXPIRES_IN: 7d
 
     services:
       mongodb:
@@ -65,11 +74,3 @@ jobs:
           pnpm start &
           sleep 10
           curl -f http://localhost:4000/api/v1/healthcheck || exit 1
-        env:
-          NODE_ENV: test
-          PORT: 4000
-          MONGODB_URI: mongodb://testuser:testpass@localhost:27017/project-management-test?authSource=admin
-          JWT_SECRET: test-secret-key
-          REFRESH_TOKEN_SECRET: test-refresh-secret
-          JWT_EXPIRES_IN: 1h
-          REFRESH_TOKEN_EXPIRES_IN: 7d
