@@ -8,17 +8,10 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-
-    services:
-      mongodb:
-        image: mongo:7.0
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --username testuser --password testpass --eval 'db.runCommand({ping: 1})'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
 
     steps:
       - name: ⬇️ Checkout code
