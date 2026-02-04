@@ -3,71 +3,36 @@ name: PR Validation
 on:
   pull_request:
     branches: [main, develop]
+    types: [opened, synchronize, reopened]
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-
-    services:
-      mongodb:
-        image: mongo:7.0
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: testuser
-          MONGO_INITDB_ROOT_PASSWORD: testpass
-          MONGO_INITDB_DATABASE: project-management-test
-        options: >-
-          --health-cmd "mongosh --username testuser --password testpass --eval 'db.runCommand({ping: 1})'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
 
     steps:
-      - name: Checkout code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.14.0'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile --no-optional
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Check code formatting
+      - name: ✨ Check code formatting
         run: pnpm run format:check
 
-      - name: Format code (if needed)
-        if: failure()
-        run: |
-          pnpm run format
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git diff --staged --quiet || git commit -m "Auto-format code"
-          git push
-
-      - name: Run tests
-        run: pnpm test
-
-      - name: Build application
-        run: pnpm run build
-
-      - name: Start application
-        run: |
-          pnpm start &
-          sleep 10
-          curl -f http://localhost:4000/api/v1/healthcheck || exit 1
-        env:
-          NODE_ENV: test
-          PORT: 4000
-          MONGODB_URI: mongodb://testuser:testpass@localhost:27017/project-management-test?authSource=admin
-          JWT_SECRET: test-secret-key
-          REFRESH_TOKEN_SECRET: test-refresh-secret
-          JWT_EXPIRES_IN: 1h
-          REFRESH_TOKEN_EXPIRES_IN: 7d
+      - name: 🧪 Run tests
+        run: pnpm run test
